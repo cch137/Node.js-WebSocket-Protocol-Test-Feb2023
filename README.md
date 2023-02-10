@@ -11,3 +11,6 @@ git push
 
 npm i --save-dev @types/node
 npm i nodemon
+
+npm i
+npm run i
