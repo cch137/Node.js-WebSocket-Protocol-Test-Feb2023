@@ -1,0 +1,25 @@
+{
+  "name": "node.js-websocket-protocol-test-feb2023",
+  "version": "1.0.0",
+  "description": "nodemon .",
+  "main": "index.js",
+  "scripts": {
+    "i": "nodemon ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cch137/node.js-websocket-protocol-test-feb2023.git"
+  },
+  "author": "cch137",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cch137/node.js-websocket-protocol-test-feb2023/issues"
+  },
+  "homepage": "https://github.com/cch137/node.js-websocket-protocol-test-feb2023#readme",
+  "devDependencies": {
+    "@types/node": "^18.13.0"
+  },
+  "dependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
