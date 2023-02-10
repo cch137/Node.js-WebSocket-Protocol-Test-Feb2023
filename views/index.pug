@@ -1,0 +1,12 @@
+doctype html
+html(lang="en")
+  head
+    include ./head
+    title Home
+    link(rel="stylesheet", href="/static/main.css")
+  body
+    div#view
+      div#message-list
+      div(style="padding-top:16px;")
+        input#input-box(type="text", placeholder="message", autofocus="on")
+    script(src="/static/main.js") 

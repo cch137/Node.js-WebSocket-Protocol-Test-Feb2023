@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@100;300;400;500;700;900&family=Noto+Sans+JP:wght@100;300;400;500;700;900&family=Noto+Sans+KR:wght@100;300;400;500;700;900&family=Noto+Sans+SC:wght@100;300;400;500;700;900&family=Noto+Sans+TC:wght@100;300;400;500;700;900&family=Noto+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300;400;500;600;700;900&family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&family=Noto+Serif+SC:wght@200;300;400;500;600;700;900&family=Noto+Serif+TC:wght@200;300;400;500;600;700;900&family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+:root {
+  --noto-sans-family: 'Noto Sans','Noto Sans TC','Noto Sans HK','Noto Sans SC','Noto Sans JP','Noto Sans KR',system-ui,-apple-system,sans-serif;
+  --noto-serif-family: 'Noto Serif', 'Noto Serif JP', 'Noto Serif KR', 'Noto Serif SC', 'Noto Serif TC', serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #111;
+  color: #fff;
+}
+
+body, input, select, textarea {
+  font-size: 18px;
+  background: #000;
+  color: #fff;
+  font-family: var(--noto-sans-family);
+}
+
+input {
+  padding: 8px;
+  border-radius: 8px;
+  border: 2px solid grey;
+}
+
+input:focus {
+  outline: none;
+  border: 2px solid darkgrey;
+}
+
+#view {
+  height: 80vh;
+  width: 800px;
+  padding: 2.5vmin;
+  background-color: #222;
+  border: 2px solid #444;
+  border-radius: 2.5vmin;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+}
+
+#message-list {
+  flex: 1;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+#input-box {
+  width: 100%;
+}
