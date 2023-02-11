@@ -63,7 +63,7 @@ The  `WSRoom`  class represents a WebSocket room.
     
 -   `removeSocket(socket: *WS*)`: removes a socket from the room.
     
--   `broadcast(event: *string*, *data*)`: broadcasts an event to all sockets in the room.
+-   `broadcast(event: *string*, data: *any*)`: broadcasts an event to all sockets in the room.
     
 
 # For developer of this module
