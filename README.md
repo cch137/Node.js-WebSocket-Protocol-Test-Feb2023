@@ -75,7 +75,6 @@ The  `WSRoom`  class represents a WebSocket room.
 ```
 npm run i
 
-
 ```
 
 ### 推送 Repository
@@ -86,7 +85,6 @@ git add .
 git commit -am "updated"
 git push
 
-
 ```
 
 ### 開發初始化
@@ -94,4 +92,5 @@ git push
 ```
 npm i --save-dev @types/node
 npm i
+
 ```
