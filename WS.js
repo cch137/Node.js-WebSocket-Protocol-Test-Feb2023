@@ -1,25 +1,16 @@
 const WS = require('ws');
 
 
-const RESERVED_EVENTS = ['close','error','message','open',
-  'ping','pong','unexpected-response','upgrade'];
-
-WS.Server.prototype.__emit = WS.Server.prototype.emit;
-
-WS.Server.prototype.emit = function(event, data, callback, ...args) {
-  args = [event, data, callback, ...args];
-  try {
-    if (callback && typeof callback != 'function') throw 'Callback is not a fucntion';
-    const message = JSON.stringify({event, data});
-    this.clients.forEach(client => {
-      if (client.readyState === WS.OPEN) {
-        client.send(message);
-      }
-    });
-  } catch {
-    this.__emit(...args);
-  }
-};
+const RESERVED_EVENTS = [
+  'close',
+  'error',
+  'message',
+  'open',
+  'ping',
+  'pong',
+  'unexpected-response',
+  'upgrade'
+];
 
 WS.prototype.joinedRooms = new Set();
 WS.prototype.__on = WS.prototype.on;
@@ -28,9 +19,11 @@ WS.prototype.settled = false;
 
 WS.prototype.emit = function(event, data, callback=(err)=>{}, ...args) {
   args = [event, data, callback, ...args];
-  if (typeof callback != 'function') {
+
+  if (callback && typeof callback != 'function') {
     return this.__emit(...args);
   }
+
   if (this.readyState === WS.OPEN) {
     this.send(JSON.stringify({
       event,
@@ -39,32 +32,44 @@ WS.prototype.emit = function(event, data, callback=(err)=>{}, ...args) {
   }
 };
 
-WS.prototype.on = function(eventName, handler) {
-  if (RESERVED_EVENTS.includes(eventName)) {
-    return this.__on(eventName, handler);
+WS.prototype.on = function(event, handler) {
+  if (RESERVED_EVENTS.includes(event)) {
+    return this.__on(event, handler);
   }
-  if (!this.handlers) this.handlers = {};
-  let eventHandlerSet = this.handlers[eventName];
+  if (!this.handlers) {
+    this.handlers = {};
+  }
+  let eventHandlerSet = this.handlers[event];
+
   if (!eventHandlerSet) {
     eventHandlerSet = new Set();
-    this.handlers[eventName] = eventHandlerSet;
+    this.handlers[event] = eventHandlerSet;
   }
   eventHandlerSet.add(handler);
+
   if (!this.settled) {
     this.__on('message', (data) => {
       let event = 'message';
-      if (data instanceof Buffer) data = data.toString();
+      if (data instanceof Buffer) {
+        data = data.toString();
+      }
+
       try {
         data = JSON.parse(data);
         event = data.event;
         data = data.data;
       } catch {}
+
       const handlerSet = this.handlers[event];
-      if (handlerSet) handlerSet.forEach(handler => handler(data));
+
+      if (handlerSet) {
+        handlerSet.forEach(handler => handler(data));
+      }
     });
     this.settled = true;
   }
 }
+
 
 class WSRoom {
   constructor(name, key) {
@@ -86,12 +91,34 @@ class WSRoom {
     socket.joinedRooms.delete(this);
   }
 
-  broadcast(data) {
+  broadcast(event, data) {
     for (const socket of this.sockets) {
-      socket.send(data);
+      socket.emit(event, data);
     }
   }
 }
+
+
+WS.Server.prototype.__emit = WS.Server.prototype.emit;
+
+WS.Server.prototype.emit = function(event, data, callback, ...args) {
+  args = [event, data, callback, ...args];
+  try {
+    if (callback && typeof callback != 'function') {
+      throw 'Callback is not a fucntion';
+    }
+    const message = JSON.stringify({event, data});
+
+    this.clients.forEach(client => {
+
+      if (client.readyState === WS.OPEN) {
+        client.send(message);
+      }
+    });
+  } catch {
+    this.__emit(...args);
+  }
+};
 
 WS.Server = class WSServer extends WS.Server {
   constructor(options) {
@@ -125,5 +152,6 @@ WS.Server = class WSServer extends WS.Server {
     }
   }
 }
+
 
 module.exports = WS;

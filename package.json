@@ -1,10 +1,10 @@
 {
   "name": "node.js-websocket-protocol-test-feb2023",
   "version": "1.0.0",
-  "description": "nodemon .",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "i": "nodemon ."
+    "i": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -20,11 +20,8 @@
     "@types/node": "^18.13.0"
   },
   "dependencies": {
-    "body-parser": "^1.20.1",
-    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "nodemon": "^2.0.20",
-    "pug": "^3.0.2",
     "ws": "^8.12.0"
   }
 }
