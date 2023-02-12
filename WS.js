@@ -15,7 +15,6 @@ const RESERVED_EVENTS = [
 WS.prototype.joinedRooms = new Set();
 WS.prototype.__on = WS.prototype.on;
 WS.prototype.__emit = WS.prototype.emit;
-WS.prototype.settled = false;
 
 WS.prototype.emit = function(event, data, callback=(err)=>{}, ..._args) {
   const type = event, args = [data, callback, ..._args];
@@ -47,7 +46,7 @@ WS.prototype.on = function(event, handler) {
   }
   eventHandlerSet.add(handler);
 
-  if (!this.settled) {
+  if (!this.initedWS) {
     this.__on('message', (data) => {
       let event = 'message';
       if (data instanceof Buffer) {
@@ -66,7 +65,8 @@ WS.prototype.on = function(event, handler) {
         handlerSet.forEach(handler => handler(data));
       }
     });
-    this.settled = true;
+    
+    this.initedWS = true;
   }
 }
 

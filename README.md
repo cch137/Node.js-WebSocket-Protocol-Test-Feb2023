@@ -13,8 +13,6 @@ The  `WS`  prototype is the  `WebSocket`  instance returned by  `ws.Server`. Thi
 
 -   `joinedRooms: *Set*`: a set of rooms that the socket has joined.
     
--   `settled: *Boolean*`: a flag indicating whether the event handling mechanism has been settled.
-    
 -   `handlers = {}`: an object that maps event names to sets of event handlers.
     
 
