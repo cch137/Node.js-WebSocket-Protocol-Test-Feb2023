@@ -23,6 +23,8 @@ app.get('/favicon.ico', (req, res) => {
 
 const io = new WS.Server({server});
 
+// throw 'BLOCKED';
+
 io.on('connection', function connection(ws) {
   console.log('WS CLIENT OPENED', ws.settled);
   ws.on('0x0', message => {
