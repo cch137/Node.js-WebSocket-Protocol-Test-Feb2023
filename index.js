@@ -17,10 +17,14 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
+app.get('/favicon.ico', (req, res) => {
+  res.sendFile(path.join(__dirname, './static/favicon.ico'));
+});
+
 const io = new WS.Server({server});
 
-io.on('connection', ws => {
-  console.log('WS CLIENT OPENED');
+io.on('connection', function connection(ws) {
+  console.log('WS CLIENT OPENED', ws.settled);
   ws.on('0x0', message => {
     console.log('0x0 received: %s', message);
   });

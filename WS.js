@@ -17,11 +17,11 @@ WS.prototype.__on = WS.prototype.on;
 WS.prototype.__emit = WS.prototype.emit;
 WS.prototype.settled = false;
 
-WS.prototype.emit = function(event, data, callback=(err)=>{}, ...args) {
-  args = [event, data, callback, ...args];
+WS.prototype.emit = function(event, data, callback=(err)=>{}, ..._args) {
+  const type = event, args = [data, callback, ..._args];
 
-  if (callback && typeof callback != 'function') {
-    return this.__emit(...args);
+  if (typeof callback != 'function') {
+    return this.__emit(type, ...args);
   }
 
   if (this.readyState === WS.OPEN) {

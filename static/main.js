@@ -1,7 +1,7 @@
-(() => {
+const io = (() => {
   const CONNECT = 'connect';
 
-  class WS {
+  class IO {
     connected = false;
     
     _handlers = new Map([
@@ -58,12 +58,11 @@
       };
 
       ws.onerror = (error) => {
-        console.log('WS Error:', error);
+        throw error;
       };
 
       ws.onclose = (event) => {
         self.connected = false;
-        console.log('WS connection closed');
         self.connect();
       };
       
@@ -72,21 +71,24 @@
     }
 
     emit(event, data) {
-      console.log('sent', event, data);
       this.ws.send(JSON.stringify({
         event, data
       }));
     }
   }
-  var socket = new WS();   
-  socket.on('0x0', data => {
+
+  return () => new IO();
+})();
+(() => {
+  let ws = io();
+  ws.on('0x0', data => {
     console.log("received 0x0:", data);
   });
-  socket.on('0x1', data => {
+  ws.on('0x1', data => {
     console.log("received 0x1:", data);
   });
-  socket.on(CONNECT, () => {
+  ws.on('connect', () => {
     console.log('CONECTED');
-    socket.emit('0x1', 'Hi, server!');
+    ws.emit('0x1', 'Hi, server!');
   });
 })();
