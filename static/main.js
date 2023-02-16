@@ -147,7 +147,7 @@ const io = (() => {
               id, event, data
             }
           }));
-          setTimeout(() => this.clearHandlers(id), 600000);
+          setTimeout(() => this.clearHandlers(id), timeout);
         })
       }
     }
