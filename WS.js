@@ -31,7 +31,18 @@ WS.prototype.emit = function(event, data, callback=(err)=>{}, ..._args) {
   }
 };
 
-WS.prototype.on = function(event, handler) {
+WS.prototype.endPending = function(id, event, data, callback=(err)=>{}) {
+  if (this.readyState === WS.OPEN) {
+    this.send(JSON.stringify({
+      event: 'pending',
+      data: {
+        id, event, data
+      }
+    }), callback);
+  }
+};
+
+WS.prototype.on = function(event, handler=(data,pendingId)=>{}) {
   if (RESERVED_EVENTS.includes(event)) {
     return this.__on(event, handler);
   }
@@ -48,7 +59,7 @@ WS.prototype.on = function(event, handler) {
 
   if (!this.initedWS) {
     this.__on('message', (data) => {
-      let event = 'message';
+      let event = 'message', pendingId;
       if (data instanceof Buffer) {
         data = data.toString();
       }
@@ -59,10 +70,16 @@ WS.prototype.on = function(event, handler) {
         data = data.data;
       } catch {}
 
+      if (event === 'pending') {
+        pendingId = data.id;
+        event = data.event;
+        data = data.data;
+      }
+
       const handlerSet = this.handlers[event];
 
       if (handlerSet) {
-        handlerSet.forEach(handler => handler(data));
+        handlerSet.forEach(handler => handler(data, pendingId));
       }
     });
     

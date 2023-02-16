@@ -54,6 +54,21 @@ const io = (() => {
         if (this.connected) handler(this.connected);
       }
     }
+
+    delHandler(eventName, handler) {
+      if (this.handlers.has(eventName)) {
+        this.handlers.get(eventName).delete(handler);
+        if (!this.handlers.get(eventName).size) {
+          this.handlers.delete(eventName);
+        }
+      }
+    }
+
+    clearHandlers(eventName) {
+      if (this.handlers.has(eventName)) {
+        this.handlers.delete(eventName);
+      }
+    }
     
     connect() {
       const self = this;
@@ -78,8 +93,13 @@ const io = (() => {
         let eventName = 'message', data = event.data;
         try {
           const packet = JSON.parse(data);
-          eventName = packet.event;
-          data = packet.data;
+          if (packet.event === 'pending') {
+            eventName = packet.data.id;
+            data = packet.data.data;
+          } else {
+            eventName = packet.event;
+            data = packet.data;
+          }
         } catch {}
         self.callListeners(eventName, data);
       };
@@ -113,45 +133,25 @@ const io = (() => {
         event, data
       }));
     }
+
+    pending(event, data, timeout=600000) {
+      const id = chee.random.base64(256);
+      return {
+        then: ((callback=(data, err)=>{}) => {
+          this.on(id, (data, err) => {
+            callback(data, err);
+          });
+          this.ws.send(JSON.stringify({
+            event: 'pending',
+            data: {
+              id, event, data
+            }
+          }));
+          setTimeout(() => this.clearHandlers(id), 600000);
+        })
+      }
+    }
   }
 
   return () => new IO();
-})();
-
-(() => {
-  const testMessage = (message) => {
-    console.log(`%c${message}`, 'color:#fff;background:#00f;font-weight:bold;padding:4px 8px;font-size:14px;');
-  };
-  let ws = io();
-  ws.on('0x0', data => {
-    console.log("received 0x0:", data);
-  });
-  ws.on('0x1', data => {
-    console.log("received 0x1:", data);
-  });
-  ws.on('connect', () => {
-    ws.emit('0x1', 'Hi, server!');
-    testMessage('CONECTED');
-  });
-  ws.on('disconnect', () => {
-    testMessage('DISCONECTED');
-  });
-  ws.on('error', () => {
-    testMessage('ERROR');
-  });
-  ws.on('reconnect', () => {
-    testMessage('RECONNECT');
-  });
-  ws.on('reconnecting', () => {
-    testMessage('RECONNECTING');
-  });
-  ws.on('reconnect_attempt', () => {
-    testMessage('RECONNECT_ATTEMPT');
-  });
-  ws.on('reconnect_error', () => {
-    testMessage('RECONNECT_ERROR');
-  });
-  ws.on('reconnect_failed', () => {
-    testMessage('RECONNECT_FAIELED');
-  });
 })();
